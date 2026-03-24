@@ -15,7 +15,7 @@ export default function RefreshButton({
         type="button"
         onClick={onRefresh}
         disabled={isLoading}
-        className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 min-h-12"
       >
         <span className={isLoading ? 'inline-block animate-spin' : ''}>↻</span>
         Refresh

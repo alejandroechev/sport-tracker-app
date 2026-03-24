@@ -75,7 +75,7 @@ export default function CompetitionPage() {
         <div className="max-w-lg mx-auto p-4 space-y-4">
           <Link
             to="/sports"
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 min-h-12 py-2"
           >
             ← Back
           </Link>
@@ -97,7 +97,7 @@ export default function CompetitionPage() {
         <div className="flex items-center gap-3">
           <Link
             to="/sports"
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 min-h-12 py-2"
           >
             ← Back
           </Link>
@@ -113,7 +113,7 @@ export default function CompetitionPage() {
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors min-h-[44px] ${
                 activeTab === tab.key
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'

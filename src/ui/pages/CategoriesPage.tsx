@@ -40,7 +40,7 @@ function CategoryCard({ category }: { category: CompetitionCategory }) {
             <li key={comp.id}>
               <Link
                 to={`/sports/${comp.id}`}
-                className="flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 active:bg-blue-100"
+                className="flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 active:bg-blue-100 min-h-12"
               >
                 <span>{comp.name}</span>
                 <span className="text-gray-300">›</span>

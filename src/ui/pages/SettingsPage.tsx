@@ -51,7 +51,7 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
-                className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
+                className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 active:bg-gray-100 min-h-12"
                 aria-label={showKey ? 'Hide API key' : 'Show API key'}
               >
                 {showKey ? '🙈' : '👁️'}
@@ -66,7 +66,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={handleSave}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 active:bg-blue-800"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 active:bg-blue-800 min-h-12"
             >
               {saved ? 'Saved ✓' : 'Save'}
             </button>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             href="https://github.com/AlejandroEsquivel/sport-tracker-app"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-sm text-blue-600 underline"
+            className="inline-flex items-center text-sm text-blue-600 underline min-h-12"
           >
             GitHub Repository
           </a>

@@ -16,7 +16,7 @@ export default function Navbar() {
             to={to}
             end={to === '/'}
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-0.5 w-full h-full text-xs font-medium transition-colors ${
+              `flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-12 text-xs font-medium transition-colors ${
                 isActive ? 'text-blue-600' : 'text-gray-400'
               }`
             }
