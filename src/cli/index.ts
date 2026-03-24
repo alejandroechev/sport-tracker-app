@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { SportDataService } from '../domain/services/sport-data.service';
 import { InMemoryStubAdapter } from '../infra/in-memory/stub.adapter';
+import { CompositeApiSportsAdapter } from '../infra/api-sports/composite.adapter';
 import {
   TRACKED_COMPETITIONS,
   SPORT_CATEGORIES,
@@ -12,8 +13,7 @@ function createService(): SportDataService {
   // Check process.env for an API key; fall back to stub.
   const apiKey = process.env['VITE_API_SPORTS_KEY'];
   if (apiKey) {
-    // TODO: when a real adapter exists, use it here
-    return new SportDataService(new InMemoryStubAdapter());
+    return new SportDataService(new CompositeApiSportsAdapter(apiKey));
   }
   return new SportDataService(new InMemoryStubAdapter());
 }
