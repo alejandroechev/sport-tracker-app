@@ -32,6 +32,16 @@ export interface F1DriverStanding {
   wins: number;
 }
 
+export interface F1ConstructorStanding {
+  rank: number;
+  team: {
+    id: number;
+    name: string;
+    color?: string;
+  };
+  points: number;
+}
+
 export interface TennisRanking {
   rank: number;
   player: {
@@ -43,7 +53,7 @@ export interface TennisRanking {
   points: number;
 }
 
-export type StandingEntry = FootballStandingEntry | F1DriverStanding | TennisRanking;
+export type StandingEntry = FootballStandingEntry | F1DriverStanding | F1ConstructorStanding | TennisRanking;
 
 export interface StandingTable {
   competitionId: string;

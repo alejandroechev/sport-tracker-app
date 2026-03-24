@@ -19,6 +19,14 @@ export class SportDataService {
     return this.port.fetchStandings(competitionId);
   }
 
+  /** Get F1 constructor standings */
+  async getConstructorStandings(): Promise<StandingTable> {
+    if (!this.port.fetchConstructorStandings) {
+      throw new Error('Constructor standings not supported');
+    }
+    return this.port.fetchConstructorStandings();
+  }
+
   /** Get upcoming matches for a competition */
   async getUpcoming(competitionId: string, count: number = 10): Promise<Match[]> {
     return this.port.fetchUpcoming(competitionId, count);

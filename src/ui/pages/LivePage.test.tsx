@@ -17,6 +17,11 @@ const defaultHookReturn: UseSportDataReturn = {
   errorStandings: null,
   refreshStandings: vi.fn(),
 
+  constructorStandings: null,
+  loadingConstructors: false,
+  errorConstructors: null,
+  refreshConstructorStandings: vi.fn(),
+
   upcoming: [],
   loadingUpcoming: false,
   errorUpcoming: null,

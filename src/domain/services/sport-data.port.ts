@@ -7,6 +7,9 @@ export interface SportDataPort {
   /** Fetch standings/rankings for a specific competition */
   fetchStandings(competitionId: string): Promise<StandingTable>;
 
+  /** Fetch F1 constructor standings (only for F1) */
+  fetchConstructorStandings?(): Promise<StandingTable>;
+
   /** Fetch upcoming matches/events for a specific competition */
   fetchUpcoming(competitionId: string, count?: number): Promise<Match[]>;
 

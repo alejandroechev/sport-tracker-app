@@ -40,6 +40,11 @@ export interface UseSportDataReturn {
   errorStandings: string | null;
   refreshStandings: (competitionId: string) => Promise<void>;
 
+  constructorStandings: StandingTable | null;
+  loadingConstructors: boolean;
+  errorConstructors: string | null;
+  refreshConstructorStandings: () => Promise<void>;
+
   upcoming: Match[];
   loadingUpcoming: boolean;
   errorUpcoming: string | null;
@@ -75,6 +80,11 @@ export function useSportData(): UseSportDataReturn {
   const [standingsTimestamp, setStandingsTimestamp] = useState<number | null>(
     null,
   );
+
+  // Constructor standings (F1)
+  const [constructorStandings, setConstructorStandings] = useState<StandingTable | null>(null);
+  const [loadingConstructors, setLoadingConstructors] = useState(false);
+  const [errorConstructors, setErrorConstructors] = useState<string | null>(null);
 
   // Upcoming
   const [upcoming, setUpcoming] = useState<Match[]>([]);
@@ -138,6 +148,34 @@ export function useSportData(): UseSportDataReturn {
     [service],
   );
 
+  const refreshConstructorStandings = useCallback(
+    async () => {
+      const key = 'constructors';
+      const cached = cache.current.get(key) as CacheEntry<StandingTable> | undefined;
+
+      if (isCacheValid(cached, CACHE_DURATION_STANDINGS)) {
+        setConstructorStandings(cached.data);
+        return;
+      }
+
+      setLoadingConstructors(true);
+      setErrorConstructors(null);
+      try {
+        const data = await service.getConstructorStandings();
+        const now = Date.now();
+        cache.current.set(key, { data, timestamp: now });
+        setConstructorStandings(data);
+      } catch (err) {
+        setErrorConstructors(
+          err instanceof Error ? err.message : 'Failed to fetch constructor standings',
+        );
+      } finally {
+        setLoadingConstructors(false);
+      }
+    },
+    [service],
+  );
+
   const refreshUpcoming = useCallback(
     async (competitionId: string) => {
       const key = `upcoming-${competitionId}`;
@@ -195,6 +233,11 @@ export function useSportData(): UseSportDataReturn {
     loadingStandings,
     errorStandings,
     refreshStandings,
+
+    constructorStandings,
+    loadingConstructors,
+    errorConstructors,
+    refreshConstructorStandings,
 
     upcoming,
     loadingUpcoming,

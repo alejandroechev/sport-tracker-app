@@ -31,6 +31,11 @@ export default function CompetitionPage() {
     refreshStandings,
     lastUpdatedStandings,
 
+    constructorStandings,
+    loadingConstructors,
+    errorConstructors,
+    refreshConstructorStandings,
+
     upcoming,
     loadingUpcoming,
     errorUpcoming,
@@ -48,6 +53,9 @@ export default function CompetitionPage() {
       switch (tab) {
         case 'standings':
           refreshStandings(competitionId);
+          if (competition?.sport === 'formula1') {
+            refreshConstructorStandings();
+          }
           break;
         case 'upcoming':
           refreshUpcoming(competitionId);
@@ -57,7 +65,7 @@ export default function CompetitionPage() {
           break;
       }
     },
-    [competitionId, refreshStandings, refreshUpcoming, refreshLiveByCompetition],
+    [competitionId, competition, refreshStandings, refreshConstructorStandings, refreshUpcoming, refreshLiveByCompetition],
   );
 
   // Lazy-fetch on first tab view
@@ -127,16 +135,33 @@ export default function CompetitionPage() {
         {/* Tab content */}
         <div className="space-y-4">
           {activeTab === 'standings' && (
-            <StandingsTab
-              standings={standings}
-              loading={loadingStandings}
-              error={errorStandings}
-              lastUpdated={lastUpdatedStandings}
-              onRefresh={() => {
-                fetchedTabs.current.delete('standings');
-                refreshStandings(competitionId);
-              }}
-            />
+            competition.sport === 'formula1' ? (
+              <F1StandingsTab
+                driverStandings={standings}
+                constructorStandings={constructorStandings}
+                loadingDrivers={loadingStandings}
+                loadingConstructors={loadingConstructors}
+                errorDrivers={errorStandings}
+                errorConstructors={errorConstructors}
+                lastUpdated={lastUpdatedStandings}
+                onRefresh={() => {
+                  fetchedTabs.current.delete('standings');
+                  refreshStandings(competitionId);
+                  refreshConstructorStandings();
+                }}
+              />
+            ) : (
+              <StandingsTab
+                standings={standings}
+                loading={loadingStandings}
+                error={errorStandings}
+                lastUpdated={lastUpdatedStandings}
+                onRefresh={() => {
+                  fetchedTabs.current.delete('standings');
+                  refreshStandings(competitionId);
+                }}
+              />
+            )
           )}
           {activeTab === 'upcoming' && (
             <UpcomingTab
@@ -269,6 +294,75 @@ function LiveTab({
       {!loading && matches.length === 0 && (
         <p className="text-center text-gray-400 py-8 text-sm">
           No live matches right now
+        </p>
+      )}
+    </>
+  );
+}
+
+function F1StandingsTab({
+  driverStandings,
+  constructorStandings,
+  loadingDrivers,
+  loadingConstructors,
+  errorDrivers,
+  errorConstructors,
+  lastUpdated,
+  onRefresh,
+}: {
+  driverStandings: ReturnType<typeof useSportData>['standings'];
+  constructorStandings: ReturnType<typeof useSportData>['constructorStandings'];
+  loadingDrivers: boolean;
+  loadingConstructors: boolean;
+  errorDrivers: string | null;
+  errorConstructors: string | null;
+  lastUpdated: string | null;
+  onRefresh: () => void;
+}) {
+  const [subTab, setSubTab] = useState<'drivers' | 'constructors'>('drivers');
+  const loading = subTab === 'drivers' ? loadingDrivers : loadingConstructors;
+  const error = subTab === 'drivers' ? errorDrivers : errorConstructors;
+  const currentStandings = subTab === 'drivers' ? driverStandings : constructorStandings;
+
+  return (
+    <>
+      <RefreshButton
+        onRefresh={onRefresh}
+        isLoading={loading}
+        lastUpdated={lastUpdated ?? undefined}
+      />
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setSubTab('drivers')}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            subTab === 'drivers'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          🏎️ Drivers
+        </button>
+        <button
+          type="button"
+          onClick={() => setSubTab('constructors')}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            subTab === 'constructors'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          🏗️ Constructors
+        </button>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      {loading && !currentStandings && (
+        <p className="text-sm text-gray-500">Loading standings…</p>
+      )}
+      {currentStandings && <StandingTable standings={currentStandings} />}
+      {!loading && !currentStandings && !error && (
+        <p className="text-center text-gray-400 py-8 text-sm">
+          No standings available
         </p>
       )}
     </>

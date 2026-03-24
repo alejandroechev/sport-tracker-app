@@ -3,6 +3,7 @@ export type { MatchStatus, Score, Team, Match } from './match';
 export type {
   FootballStandingEntry,
   F1DriverStanding,
+  F1ConstructorStanding,
   TennisRanking,
   StandingEntry,
   StandingTable,

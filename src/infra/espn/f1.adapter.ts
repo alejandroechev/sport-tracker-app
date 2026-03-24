@@ -4,6 +4,7 @@ import type {
   MatchStatus,
   StandingTable,
   F1DriverStanding,
+  F1ConstructorStanding,
 } from '../../domain/models';
 
 // Helper to find a stat value by name
@@ -67,6 +68,43 @@ export class EspnF1Adapter {
 
     return {
       competitionId: 'f1',
+      sport: 'formula1',
+      season,
+      entries,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
+  async fetchConstructorStandings(): Promise<StandingTable> {
+    const data = await this.client.getStandings('racing', 'f1');
+    const children = data.children ?? [];
+
+    const constructorGroup = children.find(
+      (c: any) => c.name?.toLowerCase().includes('constructor'),
+    ) ?? children[1];
+
+    const entries: F1ConstructorStanding[] = [];
+    const rawEntries = constructorGroup?.standings?.entries ?? [];
+
+    for (const entry of rawEntries) {
+      const stats: Array<{ name: string; value: number }> = entry.stats ?? [];
+      entries.push({
+        rank: statValue(stats, 'rank'),
+        team: {
+          id: parseInt(entry.team?.id ?? '0', 10),
+          name: entry.team?.displayName ?? entry.team?.name ?? 'Unknown',
+          color: entry.team?.color,
+        },
+        points: statValue(stats, 'points') || statValue(stats, 'championshipPts'),
+      });
+    }
+
+    entries.sort((a, b) => a.rank - b.rank);
+
+    const season = data.season?.year ?? new Date().getFullYear();
+
+    return {
+      competitionId: 'f1-constructors',
       sport: 'formula1',
       season,
       entries,

@@ -3,6 +3,7 @@ import type {
   StandingEntry,
   FootballStandingEntry,
   F1DriverStanding,
+  F1ConstructorStanding,
   TennisRanking,
 } from '../../domain/models';
 
@@ -12,6 +13,10 @@ function isFootballStanding(entry: StandingEntry): entry is FootballStandingEntr
 
 function isF1Standing(entry: StandingEntry): entry is F1DriverStanding {
   return 'driver' in entry;
+}
+
+function isF1ConstructorStanding(entry: StandingEntry): entry is F1ConstructorStanding {
+  return 'team' in entry && !('goalDifference' in entry) && !('driver' in entry) && !('player' in entry);
 }
 
 function isTennisRanking(entry: StandingEntry): entry is TennisRanking {
@@ -104,6 +109,32 @@ function TennisRow({ entry, index }: { entry: TennisRanking; index: number }) {
   );
 }
 
+function F1ConstructorHeader() {
+  return (
+    <tr>
+      <th className="sticky top-0 bg-gray-100 px-2 py-2 text-left text-xs font-semibold text-gray-600 w-8">#</th>
+      <th className="sticky top-0 bg-gray-100 px-2 py-2 text-left text-xs font-semibold text-gray-600">Constructor</th>
+      <th className="sticky top-0 bg-gray-100 px-2 py-2 text-center text-xs font-semibold text-gray-600 w-14">Pts</th>
+    </tr>
+  );
+}
+
+function F1ConstructorRow({ entry, index }: { entry: F1ConstructorStanding; index: number }) {
+  const isTopThree = entry.rank <= 3;
+  return (
+    <tr className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} ${isTopThree ? 'border-l-2 border-l-yellow-500' : ''}`}>
+      <td className="px-2 py-2 text-sm font-medium text-gray-700">{entry.rank}</td>
+      <td className="px-2 py-2 text-sm text-gray-900 flex items-center gap-2">
+        {entry.team.color && (
+          <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: `#${entry.team.color}` }} />
+        )}
+        {entry.team.name}
+      </td>
+      <td className="px-2 py-2 text-sm text-center font-bold text-gray-900">{entry.points}</td>
+    </tr>
+  );
+}
+
 export default function StandingTable({ standings }: Props) {
   if (standings.entries.length === 0) {
     return <p className="text-center text-gray-400 py-8 text-sm">No standings available</p>;
@@ -117,12 +148,14 @@ export default function StandingTable({ standings }: Props) {
         <thead>
           {isFootballStanding(firstEntry) && <FootballHeader />}
           {isF1Standing(firstEntry) && <F1Header />}
+          {isF1ConstructorStanding(firstEntry) && <F1ConstructorHeader />}
           {isTennisRanking(firstEntry) && <TennisHeader />}
         </thead>
         <tbody>
           {standings.entries.map((entry, i) => {
             if (isFootballStanding(entry)) return <FootballRow key={entry.rank} entry={entry} index={i} />;
             if (isF1Standing(entry)) return <F1Row key={entry.rank} entry={entry} index={i} />;
+            if (isF1ConstructorStanding(entry)) return <F1ConstructorRow key={entry.rank} entry={entry} index={i} />;
             if (isTennisRanking(entry)) return <TennisRow key={entry.rank} entry={entry} index={i} />;
             return null;
           })}

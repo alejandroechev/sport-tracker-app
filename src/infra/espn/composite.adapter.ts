@@ -68,6 +68,10 @@ export class EspnCompositeAdapter implements SportDataPort {
     }
   }
 
+  async fetchConstructorStandings(): Promise<StandingTable> {
+    return this.f1.fetchConstructorStandings();
+  }
+
   async fetchUpcoming(competitionId: string, count: number = 10): Promise<Match[]> {
     const competition = getCompetitionById(competitionId);
     if (!competition) {
