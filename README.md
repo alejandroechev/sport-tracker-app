@@ -69,9 +69,25 @@ npm run dev
 
 ## Deployment
 
-The app deploys to **Vercel** via GitHub Actions on push to `main`.
+The app deploys to **Vercel** via GitHub Actions on every push to `master`.
 
-Set `VITE_API_SPORTS_KEY` as an environment variable in Vercel project settings.
+### Required GitHub Secrets
+
+| Secret         | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `VERCEL_TOKEN` | Vercel personal access token used by the CI/CD pipeline      |
+
+### Vercel Environment Variables
+
+Set these in your Vercel project settings (Settings → Environment Variables):
+
+| Variable              | Description        |
+| --------------------- | ------------------ |
+| `VITE_API_SPORTS_KEY` | API-SPORTS API key |
+
+### Production URL
+
+TBD — will be assigned after the first Vercel deployment.
 
 ## Architecture
 
