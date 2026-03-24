@@ -52,9 +52,9 @@ export class EspnF1Adapter {
           image: entry.athlete?.headshot?.href,
         },
         team: {
-          id: parseInt(entry.team?.id ?? '0', 10),
-          name: entry.team?.displayName ?? 'Unknown',
-          logo: entry.team?.logos?.[0]?.href,
+          id: 0,
+          name: '',
+          logo: entry.athlete?.flag?.href,
         },
         points: statValue(stats, 'championshipPts') || statValue(stats, 'points'),
         wins: statValue(stats, 'wins'),
