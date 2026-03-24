@@ -20,12 +20,12 @@ jobs:
         run: npx tsc -b
       - name: Unit tests with coverage
         run: npx vitest run --coverage
+      - name: Build
+        run: npm run build
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: E2E tests
         run: npx playwright test
-      - name: Build
-        run: npm run build
 
   deploy:
     name: Deploy to Vercel
