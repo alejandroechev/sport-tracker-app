@@ -2,16 +2,16 @@ import type { Sport, Competition, CompetitionCategory } from '../models';
 
 export const TRACKED_COMPETITIONS: Competition[] = [
   // Football
-  { id: 'premier-league', name: 'Premier League', sport: 'football', apiLeagueId: 39 },
-  { id: 'fa-cup', name: 'FA Cup', sport: 'football', apiLeagueId: 45 },
-  { id: 'la-liga', name: 'La Liga', sport: 'football', apiLeagueId: 140 },
-  { id: 'champions-league', name: 'Champions League', sport: 'football', apiLeagueId: 2 },
-  { id: 'europa-league', name: 'Europa League', sport: 'football', apiLeagueId: 3 },
-  { id: 'world-cup', name: 'FIFA World Cup', sport: 'football', apiLeagueId: 1 },
+  { id: 'premier-league', name: 'Premier League', sport: 'football', espnSlug: 'eng.1' },
+  { id: 'fa-cup', name: 'FA Cup', sport: 'football', espnSlug: 'eng.fa' },
+  { id: 'la-liga', name: 'La Liga', sport: 'football', espnSlug: 'esp.1' },
+  { id: 'champions-league', name: 'Champions League', sport: 'football', espnSlug: 'uefa.champions' },
+  { id: 'europa-league', name: 'Europa League', sport: 'football', espnSlug: 'uefa.europa' },
+  { id: 'world-cup', name: 'FIFA World Cup', sport: 'football', espnSlug: 'fifa.world' },
   // Formula 1
-  { id: 'f1', name: 'Formula 1', sport: 'formula1', apiLeagueId: 1 },
+  { id: 'f1', name: 'Formula 1', sport: 'formula1', espnSlug: 'f1' },
   // Tennis
-  { id: 'atp', name: 'ATP Tour', sport: 'tennis', apiLeagueId: null },
+  { id: 'atp', name: 'ATP Tour', sport: 'tennis', espnSlug: 'atp' },
 ];
 
 export const SPORT_CATEGORIES: CompetitionCategory[] = [

@@ -1,26 +1,24 @@
 import { useState, useEffect } from 'react';
 import { SPORT_CATEGORIES } from '../../domain/config/competitions';
 
-const API_KEY_STORAGE_KEY = 'sport-tracker-api-key';
+const STUB_MODE_KEY = 'sport-tracker-use-stub';
 
 export default function SettingsPage() {
-  const [apiKey, setApiKey] = useState('');
-  const [showKey, setShowKey] = useState(false);
+  const [useStub, setUseStub] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(API_KEY_STORAGE_KEY);
-    if (stored) setApiKey(stored);
+    const stored = localStorage.getItem(STUB_MODE_KEY);
+    if (stored === 'true') setUseStub(true);
   }, []);
 
-  const hasKey = apiKey.trim().length > 0;
-
-  function handleSave() {
-    const trimmed = apiKey.trim();
-    if (trimmed) {
-      localStorage.setItem(API_KEY_STORAGE_KEY, trimmed);
+  function handleToggleStub() {
+    const newValue = !useStub;
+    setUseStub(newValue);
+    if (newValue) {
+      localStorage.setItem(STUB_MODE_KEY, 'true');
     } else {
-      localStorage.removeItem(API_KEY_STORAGE_KEY);
+      localStorage.removeItem(STUB_MODE_KEY);
     }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -31,58 +29,40 @@ export default function SettingsPage() {
       <div className="max-w-lg mx-auto p-4 space-y-6">
         <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
 
-        {/* API Configuration */}
+        {/* Data Source */}
         <section className="bg-white rounded-xl p-4 shadow-sm space-y-3">
-          <h2 className="text-lg font-semibold text-gray-800">API Configuration</h2>
-
-          <div className="space-y-1">
-            <label htmlFor="api-key" className="block text-sm font-medium text-gray-700">
-              API-SPORTS Key
-            </label>
-            <div className="flex gap-2">
-              <input
-                id="api-key"
-                type={showKey ? 'text' : 'password'}
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
-                className="flex-1 min-w-0 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowKey(!showKey)}
-                className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 active:bg-gray-100 min-h-12"
-                aria-label={showKey ? 'Hide API key' : 'Show API key'}
-              >
-                {showKey ? '🙈' : '👁️'}
-              </button>
-            </div>
-          </div>
+          <h2 className="text-lg font-semibold text-gray-800">Data Source</h2>
 
           <div className="flex items-center justify-between">
-            <span className={`text-sm ${hasKey ? 'text-green-600' : 'text-amber-600'}`}>
-              {hasKey ? 'Key configured ✓' : 'No key set'}
-            </span>
+            <div>
+              <p className="text-sm font-medium text-gray-700">
+                {useStub ? 'Using stub data (offline)' : 'Using ESPN live data'}
+              </p>
+              <p className="text-xs text-gray-500">
+                ESPN provides free live data — no API key needed.
+              </p>
+            </div>
             <button
               type="button"
-              onClick={handleSave}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 active:bg-blue-800 min-h-12"
+              onClick={handleToggleStub}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                useStub ? 'bg-amber-500' : 'bg-green-500'
+              }`}
+              role="switch"
+              aria-checked={useStub}
+              aria-label="Toggle stub data mode"
             >
-              {saved ? 'Saved ✓' : 'Save'}
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  useStub ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
             </button>
           </div>
 
-          <p className="text-xs text-gray-500">
-            Get your free API key at{' '}
-            <a
-              href="https://api-sports.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline"
-            >
-              api-sports.io
-            </a>
-          </p>
+          {saved && (
+            <p className="text-sm text-green-600">Saved ✓ — reload the page to apply.</p>
+          )}
         </section>
 
         {/* Tracked Competitions */}
@@ -110,6 +90,9 @@ export default function SettingsPage() {
           <p className="text-sm text-gray-700">
             <strong>Sport Tracker</strong> — Track live scores, standings, and upcoming events
             across football, Formula 1, and tennis.
+          </p>
+          <p className="text-xs text-gray-500">
+            Powered by ESPN — free, no API key required.
           </p>
           <p className="text-xs text-gray-500">Version 1.0.0</p>
           <a

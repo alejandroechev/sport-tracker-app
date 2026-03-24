@@ -1,16 +1,17 @@
 import type { SportDataPort } from '../domain/services/sport-data.port';
 import { InMemoryStubAdapter } from './in-memory';
-import { CompositeApiSportsAdapter } from './api-sports/composite.adapter';
+import { EspnCompositeAdapter } from './espn/composite.adapter';
 
 export function createSportDataAdapter(): SportDataPort {
-  const apiKey =
-    import.meta.env.VITE_API_SPORTS_KEY ||
+  const useStub =
+    import.meta.env.VITE_USE_STUB === 'true' ||
     (typeof localStorage !== 'undefined' &&
-      localStorage.getItem('sport-tracker-api-key'));
+      localStorage.getItem('sport-tracker-use-stub') === 'true');
 
-  if (apiKey && typeof apiKey === 'string') {
-    return new CompositeApiSportsAdapter(apiKey);
+  if (useStub) {
+    return new InMemoryStubAdapter();
   }
 
-  return new InMemoryStubAdapter();
+  // ESPN API requires no key — use it by default
+  return new EspnCompositeAdapter();
 }

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { SportDataService } from '../domain/services/sport-data.service';
 import { InMemoryStubAdapter } from '../infra/in-memory/stub.adapter';
-import { CompositeApiSportsAdapter } from '../infra/api-sports/composite.adapter';
+import { EspnCompositeAdapter } from '../infra/espn/composite.adapter';
 import {
   TRACKED_COMPETITIONS,
   SPORT_CATEGORIES,
@@ -9,13 +9,13 @@ import {
 import type { FootballStandingEntry, F1DriverStanding, TennisRanking } from '../domain/models';
 
 function createService(): SportDataService {
-  // In CLI context we can't use import.meta.env.
-  // Check process.env for an API key; fall back to stub.
-  const apiKey = process.env['VITE_API_SPORTS_KEY'];
-  if (apiKey) {
-    return new SportDataService(new CompositeApiSportsAdapter(apiKey));
+  // Use stub data only when explicitly requested
+  const useStub = process.env['VITE_USE_STUB'] === 'true';
+  if (useStub) {
+    return new SportDataService(new InMemoryStubAdapter());
   }
-  return new SportDataService(new InMemoryStubAdapter());
+  // ESPN API requires no key — use it by default
+  return new SportDataService(new EspnCompositeAdapter());
 }
 
 const program = new Command();
@@ -36,8 +36,8 @@ program
       console.log('─'.repeat(50));
 
       for (const comp of category.competitions) {
-        const apiId = comp.apiLeagueId ?? 'n/a';
-        console.log(`  ${comp.id.padEnd(22)} ${comp.name.padEnd(22)} API#${apiId}`);
+        const slug = comp.espnSlug;
+        console.log(`  ${comp.id.padEnd(22)} ${comp.name.padEnd(22)} ESPN:${slug}`);
       }
       console.log();
     }

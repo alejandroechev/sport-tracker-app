@@ -4,7 +4,7 @@ export interface Competition {
   id: string;
   name: string;
   sport: Sport;
-  apiLeagueId: number | null;
+  espnSlug: string;
   season?: number;
   logo?: string;
 }

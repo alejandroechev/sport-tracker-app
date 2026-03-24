@@ -8,7 +8,7 @@ const execAsync = promisify(execFile);
 async function runCli(...args: string[]): Promise<string> {
   const { stdout } = await execAsync('npx', ['tsx', 'src/cli/index.ts', ...args], {
     cwd: process.cwd(),
-    env: { ...process.env, NODE_NO_WARNINGS: '1' },
+    env: { ...process.env, NODE_NO_WARNINGS: '1', VITE_USE_STUB: 'true' },
     timeout: 30_000,
     shell: true,
   });

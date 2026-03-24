@@ -8,55 +8,34 @@ describe('SettingsPage', () => {
     localStorage.clear();
   });
 
-  it('renders the API key input', () => {
-    render(<SettingsPage />);
-    expect(screen.getByLabelText(/api-sports key/i)).toBeDefined();
-  });
-
   it('renders section headings', () => {
     render(<SettingsPage />);
-    expect(screen.getByText('API Configuration')).toBeDefined();
+    expect(screen.getByText('Data Source')).toBeDefined();
     expect(screen.getByText('Tracked Competitions')).toBeDefined();
     expect(screen.getByText('About')).toBeDefined();
   });
 
-  it('shows "No key set" when no key is stored', () => {
+  it('shows ESPN live data as default mode', () => {
     render(<SettingsPage />);
-    expect(screen.getByText('No key set')).toBeDefined();
+    expect(screen.getByText('Using ESPN live data')).toBeDefined();
   });
 
-  it('saves key to localStorage on Save click', async () => {
+  it('toggles to stub data mode on switch click', async () => {
     const user = userEvent.setup();
     render(<SettingsPage />);
 
-    const input = screen.getByLabelText(/api-sports key/i);
-    await user.type(input, 'my-test-key');
-    await user.click(screen.getByRole('button', { name: /save/i }));
+    const toggle = screen.getByRole('switch');
+    await user.click(toggle);
 
-    expect(localStorage.getItem('sport-tracker-api-key')).toBe('my-test-key');
+    expect(screen.getByText('Using stub data (offline)')).toBeDefined();
+    expect(localStorage.getItem('sport-tracker-use-stub')).toBe('true');
   });
 
-  it('loads existing key from localStorage', () => {
-    localStorage.setItem('sport-tracker-api-key', 'stored-key');
+  it('loads stub mode from localStorage', () => {
+    localStorage.setItem('sport-tracker-use-stub', 'true');
     render(<SettingsPage />);
 
-    const input = screen.getByLabelText(/api-sports key/i) as HTMLInputElement;
-    expect(input.value).toBe('stored-key');
-    expect(screen.getByText('Key configured ✓')).toBeDefined();
-  });
-
-  it('toggles key visibility with show/hide button', async () => {
-    const user = userEvent.setup();
-    render(<SettingsPage />);
-
-    const input = screen.getByLabelText(/api-sports key/i);
-    expect(input.getAttribute('type')).toBe('password');
-
-    await user.click(screen.getByRole('button', { name: /show api key/i }));
-    expect(input.getAttribute('type')).toBe('text');
-
-    await user.click(screen.getByRole('button', { name: /hide api key/i }));
-    expect(input.getAttribute('type')).toBe('password');
+    expect(screen.getByText('Using stub data (offline)')).toBeDefined();
   });
 
   it('renders tracked competitions', () => {
