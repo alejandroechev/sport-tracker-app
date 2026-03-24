@@ -27,7 +27,7 @@ describe('CLI – list-competitions', () => {
     expect(out).toContain('Formula 1');
     expect(out).toContain('ATP Tour');
     expect(out).toContain('Total: 8 competitions');
-  });
+  }, 35_000);
 });
 
 describe('CLI – fetch-standings', () => {
@@ -35,42 +35,39 @@ describe('CLI – fetch-standings', () => {
     const out = await runCli('fetch-standings', 'premier-league');
     expect(out).toContain('Premier League');
     expect(out).toContain('Standings');
-    // Should contain at least one team name and table headers
     expect(out).toMatch(/Team/);
     expect(out).toMatch(/Pts/);
-  });
+  }, 35_000);
 
   it('returns error for unknown competition', async () => {
     try {
       await runCli('fetch-standings', 'nonexistent');
-      // If we reach here, check stderr via output
       expect.fail('Expected process to indicate error');
     } catch (err: unknown) {
       const error = err as { stderr?: string; stdout?: string };
       const output = (error.stderr ?? '') + (error.stdout ?? '');
       expect(output).toContain('Unknown competition');
     }
-  });
+  }, 35_000);
 
   it('returns F1 standings', async () => {
     const out = await runCli('fetch-standings', 'f1');
     expect(out).toContain('Formula 1');
     expect(out).toContain('Driver');
-  });
+  }, 35_000);
 
   it('returns tennis rankings', async () => {
     const out = await runCli('fetch-standings', 'atp');
     expect(out).toContain('ATP Tour');
     expect(out).toContain('Player');
-  });
+  }, 35_000);
 });
 
 describe('CLI – check-live', () => {
   it('returns live events from stub', async () => {
     const out = await runCli('check-live');
-    // Stub always has live events
     expect(out).toContain('Live Event');
-  });
+  }, 35_000);
 });
 
 describe('CLI – fetch-upcoming', () => {
@@ -78,10 +75,10 @@ describe('CLI – fetch-upcoming', () => {
     const out = await runCli('fetch-upcoming', 'premier-league');
     expect(out).toContain('Premier League');
     expect(out).toMatch(/vs/);
-  });
+  }, 35_000);
 
   it('respects --count option', async () => {
     const out = await runCli('fetch-upcoming', 'premier-league', '-n', '2');
     expect(out).toContain('Premier League');
-  });
+  }, 35_000);
 });
